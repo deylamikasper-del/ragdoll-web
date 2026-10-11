@@ -146,7 +146,7 @@
       document.body.appendChild(script);
 
     </script>
-  <!-- hoodz-fullscreen 2 -->
+  <!-- hoodz-fullscreen 3 -->
     <style>
       html, body { width: 100%; height: 100%; margin: 0; padding: 0; overflow: hidden; background: #000 }
       #unity-container.unity-desktop { position: fixed; left: 0; top: 0; width: 100%; height: 100%; transform: none }
@@ -158,7 +158,8 @@
       (function () {
         // (the loader has not started yet: it reads this when its script has loaded)
         if (typeof config === 'object' && config) config.devicePixelRatio = Math.min(window.devicePixelRatio || 1, 1);
-        var events = ['mousedown', 'pointerup', 'touchend', 'keydown'];
+        // (not on mousedown: that press is the one that asks for the pointer capture, and full screen would use up its permission)
+        var events = ['pointerup', 'touchend', 'keydown'];
         function stop() { events.forEach(function (e) { window.removeEventListener(e, ask, true); }); }
         function full() { return document.fullscreenElement || document.webkitFullscreenElement; }
         function enter(done) {
@@ -176,9 +177,6 @@
           enter(stop);
         }
         events.forEach(function (e) { window.addEventListener(e, ask, true); });
-        // A click in the game captures the pointer (the game asks for it). Playing = full screen: when the pointer is
-        // captured again after Esc, full screen comes back with it. A click on a HUD button does not capture, so it does not.
-        document.addEventListener('pointerlockchange', function () { if (document.pointerLockElement && !full()) enter(null); });
       })();
     </script>
   </body>
